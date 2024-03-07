@@ -119,7 +119,7 @@ jobs:
         ./scripts/feeds install -a
         rm -rf feeds/kiddin9/luci-theme-design
         rm -rf feeds/kiddin9/luci-app-design-config
-        git clone https://github.com/gngpp/luci-theme-design/tree/js.git feeds/kiddin9/luci-theme-design
+        git clone https://github.com/gngpp/luci-theme-design.git feeds/kiddin9/luci-theme-design
         git clone https://github.com/gngpp/luci-app-design-config.git feeds/kiddin9/luci-app-design-config
         echo "status=success" >> $GITHUB_OUTPUT
 
