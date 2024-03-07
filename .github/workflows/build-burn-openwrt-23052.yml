@@ -117,6 +117,10 @@ jobs:
         cd openwrt
         ./scripts/feeds update -a
         ./scripts/feeds install -a
+        rm -rf feeds/kiddin9/luci-theme-design
+        rm -rf feeds/kiddin9/luci-app-design-config
+        git clone https://github.com/gngpp/luci-theme-design.git;js feeds/kiddin9/luci-theme-design
+        git clone https://github.com/gngpp/luci-app-design-config.git feeds/kiddin9/luci-app-design-config
         echo "status=success" >> $GITHUB_OUTPUT
 
     - name: 自定义配置（修复feeds）
