@@ -117,8 +117,6 @@ jobs:
         cd openwrt
         ./scripts/feeds update -a
         ./scripts/feeds install -a
-        rm -rf feeds/kiddin9/chinadns-ng
-        git clone https://github.com/combat60/chinadns-ng.git feeds/kiddin9/chinadns-ng
         echo "status=success" >> $GITHUB_OUTPUT
 
     - name: 自定义配置（修复feeds）
