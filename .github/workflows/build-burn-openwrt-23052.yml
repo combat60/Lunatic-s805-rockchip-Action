@@ -191,7 +191,7 @@ jobs:
       with:
         name: ${{ env.VERSION }}_${{matrix.target}}
         path: |
-          openwrt/bin/targets/
+          openwrt/bin
 
     - name: Organize files
       id: organize
