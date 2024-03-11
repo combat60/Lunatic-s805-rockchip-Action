@@ -204,7 +204,7 @@ jobs:
     - name: Upload firmware directory
       uses: actions/upload-artifact@main
       with:
-        name: wky${{ env.FILE_DATE }}
+        name: ${{matrix.target}}_${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
     - name: 生成发布标签
@@ -212,7 +212,7 @@ jobs:
       if: steps.organize.outputs.status == 'success'
       run: |
         touch release.txt
-        echo "wky firmware" >> release.txt
+        echo "${{matrix.target}} firmware" >> release.txt
         echo "status=success" >> $GITHUB_OUTPUT
 
     - name: 上传固件发布
@@ -221,7 +221,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        files: "${{ env.FIRMWARE }}/*.bin"
+        files: "${{ env.FIRMWARE }}/*"
         name: ${{ env.date2 }} ${{matrix.target}}-openwrt-23.05.2-CUS
         tag_name: ${{ env.date }}_${{matrix.target}}-openwrt-23.05.2-CUS
         body_path: release.txt
