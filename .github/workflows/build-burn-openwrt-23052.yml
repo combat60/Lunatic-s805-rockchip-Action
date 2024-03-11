@@ -107,7 +107,6 @@ jobs:
       run: |
         [ -d mypatch ] && mv -f mypatch openwrt/mypatch
         [ -d package ] && mv -f package/* openwrt/package
-        [ -d target ] && mv -f target/linux/meson515 openwrt/target/linux/meson
         echo "status=success" >> $GITHUB_OUTPUT
 
     - name: 更新 & 安装 feeds
