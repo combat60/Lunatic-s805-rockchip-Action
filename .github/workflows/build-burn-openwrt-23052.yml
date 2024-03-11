@@ -193,90 +193,35 @@ jobs:
         path: |
           openwrt/bin/targets/
 
-    - name: 生成ipk和固件的zip
-      id: afb
-      continue-on-error: true
-      if: steps.compile.outputs.status == 'success' && !cancelled()
-      run: |
-        $GITHUB_WORKSPACE/$DIY_SH_AFB
-        echo "status=success" >> $GITHUB_OUTPUT
-
-    - name: 整理文件 make burn
+    - name: Organize files
       id: organize
-      if: env.UPLOAD_FIRMWARE == 'true' && steps.afb.outputs.status == 'success' && !cancelled()
       run: |
-        sudo apt update
-        sudo apt install img2simg
-        curl -L -o ./AmlImg $AMLIMG_TOOL_URL
-        chmod +x ./AmlImg
-        curl -L -o ./uboot.img $BURN_UBOOT_IMG_URL
-        ./AmlImg unpack ./uboot.img burn/
-        echo "::end-uboot-unpack::"
-        mkdir openwrt/bin/out
-        cp -u -f openwrt/bin/targets/*/*/*.gz openwrt/bin/out/
-        gunzip openwrt/bin/out/*.gz
-        diskimg=$(ls openwrt/bin/out/*.img)
-        loop=$(sudo losetup --find --show --partscan $diskimg)
-        sudo img2simg ${loop}p1 burn/boot.simg
-        sudo img2simg ${loop}p2 burn/rootfs.simg
-        sudo losetup -d $loop
-        echo "::end-unpackext4::"
-        cat <<EOF >>burn/commands.txt
-        PARTITION:boot:sparse:boot.simg
-        PARTITION:rootfs:sparse:rootfs.simg
-        EOF
-        prefix=$(ls openwrt/bin/out/*.img | sed 's/\.img$//')
-        burnimg=${prefix}.burn.img
-        ./AmlImg pack $burnimg burn/
-        gzip -9 openwrt/bin/out/*.burn.img
-        mkdir firmware
-        cp -u -f openwrt/bin/out/*.burn.img.gz firmware
-        cp -u -f openwrt/kernelipks.zip firmware
-        cp -u -f openwrt/ipks.zip firmware
-        mv -f openwrt/bin/targets/*/*/{*combined*,*sysupgrade*,*ext4*,*sdk*,*imagebuilder*} ./firmware/ 2>/dev/null || true
-        cp openwrt/.config  ./firmware/${{matrix.target}}.config
-        cp openwrt/build_dir/target-*/linux-*/linux-*/.config ./firmware/${{matrix.target}}_kernel.config
-        cd firmware
-        echo "v${{ env.date2 }}" > version.txt
-        echo ${{matrix.target}} >> version.txt
-        rm -rf sha256sums
+        cd openwrt/bin/targets/*/*
+        rm -rf packages
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
-    - name: 上传固件cowtransfer
-      id: cowtransfer
-      if: steps.organize.outputs.status == 'success' && env.UPLOAD_COWTRANSFER == 'true' && !cancelled()
-      run: |
-        curl -fsSL git.io/file-transfer | sh
-        ./transfer cow --block 2621440 -s -p 64 --no-progress ${FIRMWARE} 2>&1 | tee cowtransfer.log
-        echo "::warning file=cowtransfer.com::$(cat cowtransfer.log | grep https)"
-        echo "url=$(cat cowtransfer.log | grep https | cut -f3 -d" ")" >> $GITHUB_OUTPUT
-
-    - name: 上传固件WeTransfer
-      id: wetransfer
-      if: steps.organize.outputs.status == 'success' && env.UPLOAD_WETRANSFER == 'true' && !cancelled()
-      run: |
-        curl -fsSL git.io/file-transfer | sh
-        ./transfer wet -s -p 16 --no-progress ${FIRMWARE} 2>&1 | tee wetransfer.log
-        echo "::warning file=wetransfer.com::$(cat wetransfer.log | grep https)"
-        echo "url=$(cat wetransfer.log | grep https | cut -f3 -d" ")" >> $GITHUB_OUTPUT
+    - name: Upload firmware directory
+      uses: actions/upload-artifact@main
+      with:
+        name: wky${{ env.FILE_DATE }}
+        path: ${{ env.FIRMWARE }}
 
     - name: 生成发布标签
       id: tag
-      if: steps.organize.outputs.status == 'success' && env.UPLOAD_RELEASE == 'true' && !cancelled()
+      if: steps.organize.outputs.status == 'success'
       run: |
         touch release.txt
-        [ $UPLOAD_COWTRANSFER = true ] && echo "🔗 [Cowtransfer](${{ steps.cowtransfer.outputs.url }})" >> release.txt
-        [ $UPLOAD_WETRANSFER = true ] && echo "🔗 [WeTransfer](${{ steps.wetransfer.outputs.url }})" >> release.txt
+        echo "wky firmware" >> release.txt
         echo "status=success" >> $GITHUB_OUTPUT
 
     - name: 上传固件发布
       uses: softprops/action-gh-release@v1
-      if: steps.tag.outputs.status == 'success' && !cancelled()
+      if: steps.tag.outputs.status == 'success'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        files: "${{ env.FIRMWARE }}/*"
+        files: "${{ env.FIRMWARE }}/*.bin"
         name: ${{ env.date2 }} ${{matrix.target}}-openwrt-23.05.2-CUS
         tag_name: ${{ env.date }}_${{matrix.target}}-openwrt-23.05.2-CUS
         body_path: release.txt
