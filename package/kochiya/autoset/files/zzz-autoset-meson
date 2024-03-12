@@ -37,6 +37,9 @@ uci -q batch <<-EOF >/dev/null
 	set network.lan.dns=223.5.5.5
         set dhcp.lan.ignore=1
         set dhcp.lan.dhcpv6=disabled
+        set dhcp.lan.ra=disabled
+        set dhcp.lan.ndp=disabled
+        set dhcp.lan.dynamicdhcp=0
 	del_list uhttpd.main.listen_https='0.0.0.0:443'
 	del_list uhttpd.main.listen_https='[::]:443'
 	add_list system.ntp.server='ntp.tencent.com'
