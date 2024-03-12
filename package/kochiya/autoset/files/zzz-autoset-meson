@@ -30,7 +30,7 @@ uci -q batch <<-EOF >/dev/null
 	set system.@system[0].zonename=Asia/Shanghai
 	set system.@system[0].log_size='128'
 	set firewall.@zone[1].input='ACCEPT'
-	set ttyd.@ttyd[0].interface='eth0'
+	set ttyd.@ttyd[0].interface='@lan'
 	set network.lan.ipaddr=192.168.1.251
 	set network.lan.gateway=192.168.1.1
 	set network.lan.netmask=255.255.255.0
