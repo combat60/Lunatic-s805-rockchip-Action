@@ -35,7 +35,6 @@ uci -q batch <<-EOF >/dev/null
 	set network.lan.gateway=192.168.1.1
 	set network.lan.netmask=255.255.255.0
 	set network.lan.dns=223.5.5.5
-        set network.lan.dhcpv6=disabled
         set dhcp.lan.ignore=1
 	del_list uhttpd.main.listen_https='0.0.0.0:443'
 	del_list uhttpd.main.listen_https='[::]:443'
@@ -69,6 +68,8 @@ sed -i '/DISTRIB_DESCRIPTION/d' /etc/openwrt_release
 /etc/init.d/olsrd disable
 /etc/init.d/olsrd6 stop
 /etc/init.d/olsrd6 disable
+/etc/init.d/odhcpd stop
+/etc/init.d/odhcpd disable
 #/etc/modechange start
 
 
