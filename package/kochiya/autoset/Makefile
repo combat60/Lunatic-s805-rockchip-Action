@@ -63,7 +63,7 @@ endef
 define Package/autoset-uci-meson
   $(Package/autoset/default)
   TITLE:=Support Packages for meson router uci
-  DEPENDS:=autoset +luci-theme-material +luci +@LUCI_LANG_zh_Hans +luci-compat
+  DEPENDS:=autoset +luci-theme-design +luci +@LUCI_LANG_zh_Hans +luci-compat
   HIDDEN:=1
 endef
 
