@@ -47,7 +47,15 @@ uci -q batch <<-EOF >/dev/null
 	commit
 EOF
 
-sed -i 's#downloads.openwrt.org#mirrors.cloud.tencent.com/openwrt#g' /etc/opkg/distfeeds.conf
+#sed -i 's#downloads.openwrt.org#mirrors.cloud.tencent.com/openwrt#g' /etc/opkg/distfeeds.conf
+
+sed -i 'openwrt_base https://mirrors.cloud.tencent.com/openwrt/releases/23.05.2/packages/arm_cortex-a5_vfpv4/base' /etc/opkg/distfeeds.conf
+sed -i 'openwrt_kiddin9 https://dl.openwrt.ai/latest/packages/arm_cortex-a5_vfpv4/kiddin9' /etc/opkg/distfeeds.conf
+sed -i 'openwrt_luci https://mirrors.cloud.tencent.com/openwrt/releases/23.05.2/packages/arm_cortex-a5_vfpv4/luci' /etc/opkg/distfeeds.conf
+sed -i 'openwrt_packages https://mirrors.cloud.tencent.com/openwrt/releases/23.05.2/packages/arm_cortex-a5_vfpv4/packages' /etc/opkg/distfeeds.conf
+sed -i 'openwrt_routing https://mirrors.cloud.tencent.com/openwrt/releases/23.05.2/packages/arm_cortex-a5_vfpv4/routing' /etc/opkg/distfeeds.conf
+sed -i 'openwrt_telephony https://mirrors.cloud.tencent.com/openwrt/releases/23.05.2/packages/arm_cortex-a5_vfpv4/telephony' /etc/opkg/distfeeds.conf
+
 
 sed -i 's#targets/meson/meson8b/packages#targets/at91/sama5/packages#g' /etc/opkg/distfeeds.conf
 
