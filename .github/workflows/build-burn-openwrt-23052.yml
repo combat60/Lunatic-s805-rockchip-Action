@@ -86,7 +86,6 @@ jobs:
         cd openwrt
         git checkout v23.05.2
         sed -i '$a src-git kiddin9 https://github.com/lunatickochiya/actionbased-openwrt-packages.git' feeds.conf.default
-        sed -i '$a src-git passwallpkg https://github.com/xiaorouji/openwrt-passwall-packages.git' feeds.conf.default
         sed -i 's|src-git packages https://git.openwrt.org/feed/packages.git\^8e3a1824645f5e73ec44c897ac0755c53fb4a1f8|src-git packages https://git.openwrt.org/feed/packages.git;openwrt-23.05|g' feeds.conf.default
         echo "status=success" >> $GITHUB_OUTPUT
 
@@ -120,10 +119,6 @@ jobs:
         ./scripts/feeds install -a
         rm -rf feeds/packages/lang/golang
         git clone https://github.com/kenzok8/golang feeds/packages/lang/golang
-        mv -f feeds/passwallpkg feeds/kiddin9
-        rm -rf feeds/passwallpkg
-        rm -rf feeds/kiddin9/luci-app-passwall
-        git clone https://github.com/xiaorouji/openwrt-passwall feeds/kiddin9/luci-app-passwall
         echo "status=success" >> $GITHUB_OUTPUT
         echo "status=success" >> $GITHUB_OUTPUT
 
