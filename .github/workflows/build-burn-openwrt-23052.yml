@@ -118,6 +118,13 @@ jobs:
         cd openwrt
         ./scripts/feeds update -a
         ./scripts/feeds install -a
+        rm -rf feeds/packages/lang/golang
+        git clone https://github.com/kenzok8/golang feeds/packages/lang/golang
+        mv -f feeds/passwallpkg feeds/kiddin9
+        rm -rf feeds/passwallpkg
+        rm -rf feeds/kiddin9/luci-app-passwall
+        git clone https://github.com/xiaorouji/openwrt-passwall feeds/kiddin9/luci-app-passwall
+        echo "status=success" >> $GITHUB_OUTPUT
         echo "status=success" >> $GITHUB_OUTPUT
 
     - name: 自定义配置（修复feeds）
